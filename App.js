@@ -8,11 +8,18 @@ import { Todo } from "./src/Todo";
 export default function App() {
   const [todos, setTodos] = useState([]);
 
-  const addTodo = (title) => {
-    setTodos(prev => [...prev, {
-      id: Date.now().toString(),
-      title,
-    }])
+  const addTodo = title => {
+    setTodos(prev => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        title,
+      }
+    ])
+  };
+
+  const removeTodo = id => {
+    setTodos(prev => prev.filter(todo => todo.id !== id))
   };
 
   return (
@@ -23,9 +30,9 @@ export default function App() {
         <AddTodo onSubmit={addTodo} />
 
         <FlatList
-          keyExtractor={(item) => item.id}
           data={todos}
-          renderItem={({item}) => <Todo title={item.title}/>}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => <Todo todo={item} onRemoveTodo={removeTodo}/>}
         />
       </View>
     </View>
