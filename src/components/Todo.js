@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
+
+import { AppText } from "./ui/AppTetxt";
 
 export const Todo = ({ todo, onRemoveTodo, onOpen }) => {
   return (
@@ -11,7 +13,7 @@ export const Todo = ({ todo, onRemoveTodo, onOpen }) => {
       }}
     >
       <View style={styles.todo}>
-        <Text>{todo.title}</Text>
+        <AppText>{todo.title}</AppText>
       </View>
     </TouchableOpacity>
   )
