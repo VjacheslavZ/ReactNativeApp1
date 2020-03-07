@@ -6,6 +6,7 @@ import { EditModal } from "../components/EditModal";
 import { AppTextBold } from "../components/ui/AppTextBold";
 
 import { THEME } from "../theme";
+import { AppButton } from "../components/ui/AppButton";
 
 export const TodoScreen = ({ goBack, todo, onRemove, onSave }) => {
   const [ modal, setModal ] = useState(false);
@@ -26,26 +27,24 @@ export const TodoScreen = ({ goBack, todo, onRemove, onSave }) => {
 
       <AppCard style={styles.card}>
         <AppTextBold style={styles.title}>{todo.title}</AppTextBold>
-        <Button
-          title='Edit'
-          onPress={() => setModal(true)}
-        />
+        <AppButton onPress={() => setModal(true)}>
+          Edit
+        </AppButton>
       </AppCard>
 
       <View style={styles.buttons}>
         <View style={styles.button}>
-          <Button
-            title='Go back'
-            onPress={goBack}
-            color={THEME.GREY_COLOR}
-          />
+          <AppButton onPress={goBack} color={THEME.GREY_COLOR}>
+            Go back
+          </AppButton>
         </View>
         <View style={styles.button}>
-          <Button
-            title='Delete'
+          <AppButton
             onPress={() => onRemove(todo.id)}
             color={THEME.DANGER_COLOR}
-          />
+          >
+            Delete
+          </AppButton>
         </View>
       </View>
     </View>
