@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, Button, Alert } from 'react-native';
+import { StyleSheet, TextInput, View, Alert, Keyboard } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
 import { THEME } from "../theme";
@@ -10,7 +10,8 @@ export const AddTodo = ({ onSubmit }) => {
   const pressHandler = () => {
     if (value.trim()) {
       onSubmit(value);
-      setValue('')
+      setValue('');
+      Keyboard.dismiss();
     } else {
       Alert.alert('Name todo can not to be empty')
     }
