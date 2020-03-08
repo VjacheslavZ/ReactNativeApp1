@@ -8,56 +8,56 @@ import {TodoScreen} from "./screens/TodoScreen";
 import {TodoContext} from "./context/todo/todoContext";
 
 export const MainLayout = () => {
-  const todoContext = useContext(TodoContext);
+  const {todos, addTodo, removeTodo, updateTodo} = useContext(TodoContext);
 
   const [todoId, setTodoId] = useState(null);
-  const [todos, setTodos] = useState([]);
+  // const [todos, setTodos] = useState([]);
 
-  const addTodo = title => {
-    setTodos(prev => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        title,
-      }
-    ])
-  };
+  // const addTodo = title => {
+  //   setTodos(prev => [
+  //     ...prev,
+  //     {
+  //       id: Date.now().toString(),
+  //       title,
+  //     }
+  //   ])
+  // };
 
-  const removeTodo = id => {
-    const todo = todos.find((t) => t.id === id);
+  // const removeTodo = id => {
+  //   const todo = todos.find((t) => t.id === id);
+  //
+  //   Alert.alert(
+  //     'Delete item',
+  //     `Are you sure delete ${todo.title} ?`,
+  //     [
+  //       {text: 'Cancel', style: 'cancel'},
+  //       {
+  //         text: 'Delete',
+  //         onPress: () => {
+  //           setTodoId(null);
+  //           setTodos(prev => prev.filter(todo => todo.id !== id));
+  //         }
+  //       },
+  //     ],
+  //     {
+  //       style: 'destructive',
+  //       cancelable: false
+  //     },
+  //   );
+  // };
 
-    Alert.alert(
-      'Delete item',
-      `Are you sure delete ${todo.title} ?`,
-      [
-        {text: 'Cancel', style: 'cancel'},
-        {
-          text: 'Delete',
-          onPress: () => {
-            setTodoId(null);
-            setTodos(prev => prev.filter(todo => todo.id !== id));
-          }
-        },
-      ],
-      {
-        style: 'destructive',
-        cancelable: false
-      },
-    );
-  };
-
-  const updateTodo = (id, title) => {
-    setTodos(old => old.map(todo => {
-      if (todo.id === id) {
-        todo.title = title
-      }
-      return todo
-    }))
-  };
+  // const updateTodo = (id, title) => {
+  //   setTodos(old => old.map(todo => {
+  //     if (todo.id === id) {
+  //       todo.title = title
+  //     }
+  //     return todo
+  //   }))
+  // };
 
   let content = (
     <MainScreen
-      todos={todoContext.todos}
+      todos={todos}
       addTodo={addTodo}
       removeTodo={removeTodo}
       openTodo={setTodoId}
