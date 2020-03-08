@@ -1,6 +1,7 @@
 import React, {useReducer, useContext} from 'react';
 import {Alert} from 'react-native';
 
+import {Http} from "../../http";
 import {ScreenContext} from "../screen/screenContext";
 
 import {todoReducer} from './todoReducer'
@@ -15,7 +16,7 @@ import {
   SHOW_LOADER,
   UPDATE_TODO
 } from "../types";
-import { FIREBASE_URI } from "../../constants";
+import {FIREBASE_URI} from "../../constants";
 
 const initialState = {
   todos: [],
@@ -25,18 +26,21 @@ const initialState = {
 
 export const TodoState = ({children}) => {
   const [state, dispatch] = useReducer(todoReducer, initialState);
-
   const {changeScreen} = useContext(ScreenContext);
 
-  const addTodo = async title => {
-    const responce = await fetch(`${FIREBASE_URI}/todos.json`, {
-      method: 'POST',
-      headers: {'content-type': 'application/json'},
-      body: JSON.stringify({title})
-    });
-    const data = await responce.json();
+  const showLoader = () => dispatch({type: SHOW_LOADER});
+  const hideLoader = () => dispatch({type: HIDE_LOADER});
+  const showError = err => dispatch({type: SHOW_ERROR, err});
+  const clearError = () => dispatch({type: CLEAR_ERROR});
 
-    dispatch({type: ADD_TODO, title, id: data.name})
+  const addTodo = async title => {
+    clearError();
+    try {
+      const data = await Http.post(`${FIREBASE_URI}/todos.json`, {title});
+      dispatch({type: ADD_TODO, title, id: data.name})
+    } catch (e) {
+      showError('Some thing went wrong, try again');
+    }
   };
 
   const removeTodo = id => {
@@ -48,8 +52,9 @@ export const TodoState = ({children}) => {
         {text: 'Cancel', style: 'cancel'},
         {
           text: 'Delete',
-          onPress: () => {
+          onPress: async () => {
             changeScreen(null);
+            await Http.delete(`${FIREBASE_URI}/todos/${id}.json`);
             dispatch({type: REMOVE_TODO, id})
           }
         },
@@ -60,26 +65,25 @@ export const TodoState = ({children}) => {
     );
   };
 
-  const updateTodo = (id, title) => dispatch({type: UPDATE_TODO, id, title});
-
-  const showLoader = () => dispatch({type: SHOW_LOADER});
-  const hideLoader = () => dispatch({type: HIDE_LOADER});
-
-  const showError = err => dispatch({type: SHOW_ERROR, err});
-  const clearError = () => dispatch({type: CLEAR_ERROR});
+  const updateTodo = async (id, title) => {
+    clearError();
+    try {
+      await Http.patch(`${FIREBASE_URI}/todos/${id}.json`,  JSON.stringify({title}));
+      dispatch({type: UPDATE_TODO, id, title})
+    } catch (e) {
+      showError('Some thing went wrong, try again');
+      console.log('error happen', e);
+    }
+  };
 
   const fetchTodos = async () => {
     showLoader();
     clearError();
 
     try {
-      const responce = await fetch(`${FIREBASE_URI}/todos.json`, {
-        headers: {'content-type': 'application/json'},
-      });
-      const data = await responce.json();
-      const todos = Object.keys(data).map(key => ({ ...data[key], id: key }));
-
-      dispatch({ type: FETCH_TODOS, todos});
+      const data = await Http.get(`${FIREBASE_URI}/todos.json`)
+      const todos = Object.keys(data).map(key => ({...data[key], id: key}));
+      dispatch({type: FETCH_TODOS, todos});
     } catch (e) {
       showError('Some thing went wrong, try again');
       console.log('error happen', e);
