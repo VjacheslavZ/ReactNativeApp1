@@ -60,16 +60,6 @@ export const TodoState = ({children}) => {
     );
   };
 
-  const fetchTodos = async () => {
-    const responce = await fetch(`${FIREBASE_URI}/todos.json`, {
-      headers: {'content-type': 'application/json'},
-    });
-    const data = await responce.json();
-    const todos = Object.keys(data).map(key => ({ ...data[key], id: key }));
-
-    dispatch({ type: FETCH_TODOS, todos})
-  };
-
   const updateTodo = (id, title) => dispatch({type: UPDATE_TODO, id, title});
 
   const showLoader = () => dispatch({type: SHOW_LOADER});
@@ -77,6 +67,26 @@ export const TodoState = ({children}) => {
 
   const showError = err => dispatch({type: SHOW_ERROR, err});
   const clearError = () => dispatch({type: CLEAR_ERROR});
+
+  const fetchTodos = async () => {
+    showLoader();
+    clearError();
+
+    try {
+      const responce = await fetch(`${FIREBASE_URI}/todos.json`, {
+        headers: {'content-type': 'application/json'},
+      });
+      const data = await responce.json();
+      const todos = Object.keys(data).map(key => ({ ...data[key], id: key }));
+
+      dispatch({ type: FETCH_TODOS, todos});
+    } catch (e) {
+      showError('Some thing went wrong, try again');
+      console.log('error happen', e);
+    } finally {
+      hideLoader();
+    }
+  };
 
   return (
     <TodoContext.Provider

@@ -3,6 +3,10 @@ import {FlatList, StyleSheet, View, Image, Dimensions} from 'react-native';
 
 import {AddTodo} from "../components/AddTodo";
 import {Todo} from "../components/Todo";
+import {AppLoader} from "../components/ui/AppLoader";
+import {AppText} from "../components/ui/AppTetxt";
+import {AppButton} from "../components/ui/AppButton";
+
 import {THEME} from "../theme";
 
 import {TodoContext} from "../context/todo/todoContext";
@@ -32,6 +36,19 @@ export const MainScreen = () => {
   useEffect(() => {
     loadTodos()
   }, []);
+
+  if (loading) {
+    return <AppLoader/>
+  }
+
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <AppText style={styles.error}>{error.err}</AppText>
+        <AppButton onPress={loadTodos}>Try again</AppButton>
+      </View>
+    )
+  }
 
   let content = (
     <View style={{
@@ -72,5 +89,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'contain'
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  error: {
+    fontSize: 20,
+    color: THEME.DANGER_COLOR
   }
 });

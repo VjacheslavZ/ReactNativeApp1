@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Alert} from "react-native";
 
 import {NavBar} from "./components/NavBar";
@@ -11,17 +11,23 @@ import {ScreenContext} from "./context/screen/screenContext";
 export const MainLayout = () => {
   const {todoId} = useContext(ScreenContext);
 
-  return <View>
-    <NavBar title='Todo app'/>
-    <View style={styles.container}>
-      {todoId ? <TodoScreen /> : <MainScreen />}
+  return (
+    <View style={styles.wrapper}>
+      <NavBar title='Todo app'/>
+      <View style={styles.container}>
+        {todoId ? <TodoScreen/> : <MainScreen/>}
+      </View>
     </View>
-  </View>
+  )
 };
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: THEME.PADDING_HORIZONTAL,
     paddingVertical: 20,
+    flex: 1
   },
+  wrapper: {
+    flex: 1
+  }
 });
